@@ -50,6 +50,38 @@ class Pokemon(models.Model):
     def __str__(self):
         return self.name
 
+# Aiden's addition for API and Analytics segment
+# --- Weather / API models ---
+class City(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
 
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = 'cities'
+
+    def __str__(self):
+        return self.name
+
+
+class WeatherRecord(models.Model):
+    SOURCE_CHOICES = [
+        ('csv', 'CSV Import'),
+        ('api', 'API Fetch'),
+    ]
+
+    city = models.ForeignKey(City, on_delete=models.CASCADE, related_name='records')
+    timestamp = models.DateTimeField()
+    temperature = models.FloatField()
+    source = models.CharField(max_length=10, choices=SOURCE_CHOICES, default='api')
+    data_run = models.ForeignKey(DataRun, on_delete=models.CASCADE, related_name='weather_records')
+
+    class Meta:
+        ordering        = ['-timestamp']
+        unique_together = ['city', 'timestamp']
+
+    def __str__(self):
+        return f"{self.city.name} @ {self.timestamp}"
 
     

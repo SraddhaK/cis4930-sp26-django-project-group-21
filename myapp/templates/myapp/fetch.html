@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fetch Data</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+  <div class="card col-md-6">
+    <div class="card-header">
+      <h5 class="mb-0">Fetch Live Weather Data</h5>
+    </div>
+    <div class="card-body">
+      <p class="card-text text-muted">
+        Pulls yesterday's hourly temperature data for Tallahassee, Miami, and Orlando.
+      </p>
+      <form method="post" action="/fetch/run/">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Run fetch</button>
+      </form>
+      {% if message %}
+        <div class="alert {% if success %}alert-success{% else %}alert-danger{% endif %} mt-3">
+          {{ message }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+</body>
+</html>
