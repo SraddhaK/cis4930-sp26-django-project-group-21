@@ -2,8 +2,30 @@ from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
 from django.core.management import call_command
+from .models import Pokemon
 
-# Create your views here.
+def home(request):
+    return render(request, "myapp/home.html")
+
+
+def record_list(request):
+    return render(request, "myapp/record_list.html")
+
+
+def record_detail(request, pk):
+    return render(request, "myapp/record_detail.html")
+
+
+def record_create(request):
+    return render(request, "myapp/record_form.html")
+
+
+def record_update(request, pk):
+    return render(request, "myapp/record_form.html")
+
+
+def record_delete(request, pk):
+    return render(request, "myapp/record_confirm_delete.html")
 
 # Aiden's views for API role
 
