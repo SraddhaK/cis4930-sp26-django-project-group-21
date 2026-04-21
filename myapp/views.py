@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
 from django.core.management import call_command
@@ -34,10 +34,22 @@ def record_create(request):
     return render(request, "myapp/record_form.html", {"form": form})
 
 def record_update(request, pk):
-    return render(request, "myapp/record_form.html")
+    pokemon = get_object_or_404(Pokemon, pk=pk)
+    if request.method == "POST":
+        form = PokemonForm(request.POST, instance=pokemon)
+        if form.is_valid():
+            form.save()
+            return redirect("myapp:record_detail", pk=pokemon.pk)
+    else:
+        form = PokemonForm(instance=pokemon)
+    return render(request, "myapp/record_form.html", {"form": form})
 
 def record_delete(request, pk):
-    return render(request, "myapp/record_confirm_delete.html")
+    pokemon = get_object_or_404(Pokemon, pk=pk)
+    if request.method == "POST":
+        pokemon.delete()
+        return redirect("myapp:record_list")
+    return render(request, "myapp/record_confirm_delete.html", {"pokemon": pokemon})
 
 # Aiden's views for API role
 
