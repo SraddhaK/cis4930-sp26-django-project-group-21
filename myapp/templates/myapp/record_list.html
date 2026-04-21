@@ -1,0 +1,49 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Pokemon List{% endblock %}
+
+{% block content %}
+<h1>Pokemon</h1>
+
+<p><a href="{% url 'myapp:record_create' %}">Add New Pokemon</a></p>
+
+{% if page_obj %}
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>HP</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pokemon in page_obj %}
+        <tr>
+            <td><a href="{% url 'myapp:record_detail' pokemon.pk %}">{{ pokemon.name }}</a></td>
+            <td>{{ pokemon.primary_type }}</td>
+            <td>{{ pokemon.hp }}</td>
+        </tr>
+        {% empty %}
+        <p>No Pokemon found.</p>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- pagination -->
+<nav>
+    {% if page_obj.has_previous %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+</nav>
+{% else %}
+<p>No Pokemon in the database yet.</p>
+{% endif %}
+{% endblock %}
