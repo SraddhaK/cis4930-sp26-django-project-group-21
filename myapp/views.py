@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
 from django.core.management import call_command
-from .models import Pokemon
 from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404
+from .models import Pokemon, DataRun
+from .forms import PokemonForm
 
 def home(request):
     return render(request, "myapp/home.html")
@@ -21,7 +21,17 @@ def record_detail(request, pk):
     return render(request, "myapp/record_detail.html", {"pokemon": pokemon})
 
 def record_create(request):
-    return render(request, "myapp/record_form.html")
+    if request.method == "POST": # fill form with submitted data and validate
+        form = PokemonForm(request.POST)
+        if form.is_valid(): 
+            pokemon = form.save(commit=False) # allows to fill form before saving to DB
+            data_run, _ = DataRun.objects.get_or_create(source='csv')
+            pokemon.data_run = data_run # note: DataRun tracks which batch of data the Pokemon was imported with
+            pokemon.save()
+            return redirect("myapp:record_detail", pk=pokemon.pk)
+    else: # GET request from Add New Pokemon link, show blank form
+        form = PokemonForm()
+    return render(request, "myapp/record_form.html", {"form": form})
 
 def record_update(request, pk):
     return render(request, "myapp/record_form.html")

@@ -39,6 +39,8 @@ class Pokemon(models.Model):
 
     primary_type = models.ForeignKey(PokemonType, on_delete=models.CASCADE)
 
+    secondary_type = models.ForeignKey(PokemonType, on_delete=models.SET_NULL, null=True, blank=True, related_name='secondary_pokemon')
+
     hp = models.IntegerField(validators=[MinValueValidator(1)])
 
     data_run = models.ForeignKey(DataRun, on_delete=models.CASCADE)
