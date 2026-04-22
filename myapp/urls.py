@@ -20,7 +20,7 @@ urlpatterns = [
     path('weather-boost/', views.weather_boost, name='weather_boost'),
 
     # Analytics dashboard uncomment when analytics dashboard is made
-    # path('analytics/', views.analytics, name='analytics'),
+    path('analytics/', views.analytics, name='analytics'),
 
     # API fetch trigger (staff only)
     path('fetch/', views.fetch_page, name='fetch'),
