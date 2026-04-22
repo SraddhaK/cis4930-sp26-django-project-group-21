@@ -51,17 +51,17 @@ def record_delete(request, pk):
         return redirect("myapp:record_list")
     return render(request, "myapp/record_confirm_delete.html", {"pokemon": pokemon})
 
+BOOST_RULES = [
+    {"type": "Fire", "condition": "Above 85°F", "check": lambda t: t >= 85},
+    {"type": "Water", "condition": "Below 65°F", "check": lambda t: t <= 65},
+    {"type": "Grass", "condition": "Between 65°F and 80°F", "check": lambda t: 65 < t <= 80},
+    {"type": "Electric", "condition": "Above 90°F", "check": lambda t: t >= 90},
+    {"type": "Ice", "condition": "Below 32°F", "check": lambda t: t <= 32},
+]
+
 def get_boosted_types(temperature):
-    boosted = []
-    if temperature >= 85:
-        boosted.append('Fire')
-    if temperature <= 65:
-        boosted.append('Water')
-    if 65 < temperature <= 80:
-        boosted.append('Grass')
-    if temperature >= 90:
-        boosted.append('Electric')
-    return boosted if boosted else ['Normal']
+    boosted = [rule["type"] for rule in BOOST_RULES if rule["check"](temperature)]
+    return boosted if boosted else ["Normal"]
 
 def weather_boost(request):
     cities = City.objects.all()
