@@ -1,0 +1,15 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}{{ pokemon.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ pokemon.name }}</h1>
+<p>Type: {{ pokemon.primary_type }}</p>
+<p>HP: {{ pokemon.hp }}</p>
+<p>Data Source: {{ pokemon.data_run }}</p>
+<p>Added: {{ pokemon.data_run.created_at }}</p>
+
+<p><a href="{% url 'myapp:record_update' pokemon.pk %}">Edit</a></p>
+<p><a href="{% url 'myapp:record_delete' pokemon.pk %}">Delete</a></p>
+<p><a href="{% url 'myapp:record_list' %}">Back to all Pokemon</a></p>
+{% endblock %}

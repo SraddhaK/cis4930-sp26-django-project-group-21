@@ -1,0 +1,15 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Delete {{ pokemon.name }}{% endblock %}
+
+{% block content %}
+<h1>Delete Pokemon</h1>
+<p>Are you sure you want to delete {{ pokemon.name }}?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete</button>
+</form>
+
+<a href="{% url 'myapp:record_detail' pokemon.pk %}">Cancel</a>
+{% endblock %}
