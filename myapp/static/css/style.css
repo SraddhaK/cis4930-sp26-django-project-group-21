@@ -1,0 +1,50 @@
+
+body {
+    background-color: #001112;
+}
+
+.container {
+    max-width: 960px;
+}
+
+
+.navbar {
+    padding: 1rem 2rem;
+}
+
+
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    margin-bottom: 1.5rem;
+    background-color: #14585c;
+
+    .card-body {
+        color: white
+    }
+    
+}
+
+
+.table th {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+}
+
+
+.btn {
+    border-radius: 20px;
+    padding: 0.4rem 1.2rem;
+    background-color: white;
+    border-color: white;
+    color: black;
+}
+
+.mb-0 {
+    color: white;
+}
+
+.d-flex {
+    color:white
+}

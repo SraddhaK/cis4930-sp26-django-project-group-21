@@ -3,13 +3,24 @@
 {% block title %}Delete {{ pokemon.name }}{% endblock %}
 
 {% block content %}
-<h1>Delete Pokemon</h1>
-<p>Are you sure you want to delete {{ pokemon.name }}?</p>
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Yes, delete</button>
-</form>
+<div class="card mb-4">
+  <div class="card-header">
+    <h1 class="mb-0">Delete Pokemon</h1>
+  </div>
+  <div class="card-body">
 
-<a href="{% url 'myapp:record_detail' pokemon.pk %}">Cancel</a>
+    <p class="card-text">Are you sure you want to delete <strong>{{ pokemon.name }}</strong>?</p>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        <a href="{% url 'myapp:record_detail' pokemon.pk %}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+
+  </div>
+</div>
+
 {% endblock %}

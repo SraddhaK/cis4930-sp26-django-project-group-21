@@ -14,15 +14,21 @@ class Command(BaseCommand):
         for _, row in df.iterrows():
             p_type, _ = PokemonType.objects.get_or_create(name=row['type_1'])
 
-            
+            # Handle secondary type
+            secondary = row.get('type_2')
+            if pd.notna(secondary) and secondary != '':
+                s_type, _ = PokemonType.objects.get_or_create(name=secondary)
+            else:
+                s_type = None
+
             Pokemon.objects.get_or_create(
                 name=row['name'],
                 primary_type=p_type,
                 defaults={
                     'hp': row['hp'],
+                    'secondary_type': s_type,  # ← added this
                     'data_run': run
                 }
             )
-            
 
         self.stdout.write("Seed complete")
