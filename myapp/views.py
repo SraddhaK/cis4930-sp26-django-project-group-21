@@ -5,6 +5,10 @@ from django.core.management import call_command
 from django.core.paginator import Paginator
 from .models import Pokemon, DataRun, PokemonType, City, WeatherRecord
 from .forms import PokemonForm
+import json
+import os
+import pandas as pd
+from django.conf import settings
 
 def home(request):
     return render(request, "myapp/home.html")
@@ -110,4 +114,129 @@ def fetch_data_view(request):
     return render(request, "myapp/fetch.html", {
         "message": message,
         "success": success,
+    })
+
+# Aiden's views for Analytics role
+def analytics(request):
+ 
+    # --- Load Pokemon data from DB into a DataFrame ---
+    qs = Pokemon.objects.select_related('primary_type').values(
+        'name',
+        'primary_type__name',
+        'hp',
+    )
+    df = pd.DataFrame(list(qs))
+    if not df.empty:
+        print("nrenamed w type_1")
+        df.rename(columns={'primary_type__name': 'type_1'}, inplace=True)
+ 
+    # --- 2. Load CSV for generation + full stat columns ---
+    #print(f"{os.path.join(settings.BASE_DIR.parent, 'data', 'raw', 'pokemon.csv')}")
+    csv_path = os.path.join(settings.BASE_DIR.parent, 'data', 'raw', 'pokemon.csv')
+    try:
+        csv_df = pd.read_csv(csv_path)
+        csv_df.columns = [c.lower() for c in csv_df.columns]
+        csv_df = csv_df[['name', 'generation', 'total_points',
+                          'attack', 'defense', 'sp_attack',
+                          'sp_defense', 'speed', 'type_1', 'status']].copy()
+        use_csv = True
+    except FileNotFoundError:
+        use_csv = False
+        print("couldn't find file")
+        csv_df = pd.DataFrame()
+ 
+    # Research Question 1 — "Which typing has the greatest power?" using bar chart
+    if use_csv:
+        type_power = (
+            csv_df.groupby('type_1')['total_points']
+            .mean()
+            .round(1)
+            .sort_values(ascending=False)
+        )
+        bar_labels = type_power.index.tolist()
+        bar_values = type_power.values.tolist()
+    else:
+        fallback = df.groupby('type_1')['hp'].mean().round(1).sort_values(ascending=False)
+        bar_labels = fallback.index.tolist()
+        bar_values = fallback.values.tolist()
+ 
+    bar_chart_data = {'labels': bar_labels, 'values': bar_values}
+ 
+    # Research Question 2 — "How do power levels change across generations?" using line chart
+    if use_csv:
+        gen_power = (
+            csv_df.groupby('generation')['total_points']
+            .mean()
+            .round(1)
+            .sort_index()
+        )
+        line_labels = [f'Gen {int(g)}' for g in gen_power.index.tolist()]
+        line_values = gen_power.values.tolist()
+    else:
+        line_labels, line_values = [], []
+ 
+    line_chart_data = {'labels': line_labels, 'values': line_values}
+ 
+    # Research Question 3 — "Does Florida's heat give boosted types an edge?" using donut chart
+    boosted_type_names = set()
+    city_temp_summary  = []
+ 
+    for city in City.objects.all():
+        latest = WeatherRecord.objects.filter(city=city).first()
+        if latest:
+            boosted = get_boosted_types(latest.temperature)
+            boosted_type_names.update(boosted)
+            city_temp_summary.append({
+                'city':          city.name,
+                'temperature':   latest.temperature,
+                'timestamp':     latest.timestamp,
+                'boosted_types': boosted,
+            })
+ 
+    if use_csv and boosted_type_names:
+        csv_df['is_boosted'] = csv_df['type_1'].isin(boosted_type_names)
+        boost_groups = csv_df.groupby('is_boosted')['total_points'].mean().round(1)
+        boosted_avg    = float(boost_groups.get(True,  0))
+        nonboosted_avg = float(boost_groups.get(False, 0))
+    else:
+        boosted_avg, nonboosted_avg = 0, 0
+ 
+    doughnut_chart_data = {
+        'labels': ['Boosted Types', 'Non-Boosted Types'],
+        'values': [boosted_avg, nonboosted_avg],
+    }
+ 
+    # --- Summary statistics table (count, mean, min, max) ---
+    if use_csv:
+        summary_stats = {
+            'Total Points': {
+                'count': int(csv_df['total_points'].count()),
+                'mean':  round(float(csv_df['total_points'].mean()), 1),
+                'min':   int(csv_df['total_points'].min()),
+                'max':   int(csv_df['total_points'].max()),
+            },
+            'Attack': {
+                'count': int(csv_df['attack'].count()),
+                'mean':  round(float(csv_df['attack'].mean()), 1),
+                'min':   int(csv_df['attack'].min()),
+                'max':   int(csv_df['attack'].max()),
+            },
+        }
+        most_common_type  = csv_df['type_1'].value_counts().idxmax()
+        most_common_count = int(csv_df['type_1'].value_counts().max())
+    else:
+        summary_stats = {}
+        most_common_type  = 'N/A'
+        most_common_count = 0
+ 
+    return render(request, 'myapp/analytics.html', {
+        'bar_chart_json':      json.dumps(bar_chart_data),
+        'line_chart_json':     json.dumps(line_chart_data),
+        'doughnut_chart_json': json.dumps(doughnut_chart_data),
+        'summary_stats':       summary_stats,
+        'city_temp_summary':   city_temp_summary,
+        'boosted_type_names':  sorted(boosted_type_names),
+        'most_common_type':    most_common_type,
+        'most_common_count':   most_common_count,
+        'use_csv':             use_csv,
     })
