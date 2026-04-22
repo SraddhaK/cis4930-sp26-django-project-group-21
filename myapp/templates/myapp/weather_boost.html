@@ -7,7 +7,31 @@
 <div class="card mb-4">
   <div class="card-body">
     <h1 class="card-title">Weather-Boosted Pokemon</h1>
-    <p class="card-text">Based on the latest weather data for each Florida city.</p>
+    <p class="card-text">Based on the latest weather data for each Florida city, certain Pokemon types receive a boost depending on the current temperature.</p>
+  </div>
+</div>
+
+<div class="card mb-4">
+  <div class="card-header">
+    <h2 class="mb-0">Boost Rules</h2>
+  </div>
+  <div class="card-body">
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Condition</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Fire</td><td>Temperature above 85°F</td></tr>
+        <tr><td>Electric</td><td>Temperature above 90°F</td></tr>
+        <tr><td>Grass</td><td>Temperature between 65°F and 80°F</td></tr>
+        <tr><td>Water</td><td>Temperature below 65°F</td></tr>
+        <tr><td>Ice</td><td>Temperature below 32°F (freezing)</td></tr>
+        <tr><td>Normal</td><td>No other boost applies</td></tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
