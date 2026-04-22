@@ -5,15 +5,37 @@
 {% endblock %}
 
 {% block content %}
-<h1>
-    {% if pokemon %} Edit {{ pokemon.name }} {% else %} Add New Pokemon {% endif %}
-</h1>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-</form>
+<div class="card mb-4">
+  <div class="card-header">
+    <h1 class="mb-0">
+      {% if pokemon %} Edit {{ pokemon.name }} {% else %} Add New Pokemon {% endif %}
+    </h1>
+  </div>
+  <div class="card-body">
 
-<p><a href="{% url 'myapp:record_list' %}">Cancel</a></p>
+    <form method="post">
+      {% csrf_token %}
+
+      {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        <div class="form-control-wrap">
+          {{ field }}
+        </div>
+        {% if field.errors %}
+        <div class="text-danger mt-1">
+          {{ field.errors }}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <button type="submit" class="btn btn-primary">Save</button>
+      <a href="{% url 'myapp:record_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+
+  </div>
+</div>
+
 {% endblock %}

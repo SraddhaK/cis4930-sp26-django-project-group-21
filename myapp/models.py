@@ -13,6 +13,7 @@ class PokemonType(models.Model):
         ('Grass', 'Grass'),
         ('Electric', 'Electric'),
         ('Normal', 'Normal'),
+        ('Ice', 'Ice'),
     ]
 
     name = models.CharField(max_length=20, choices=TYPE_CHOICES, unique=True)

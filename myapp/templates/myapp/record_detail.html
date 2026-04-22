@@ -3,13 +3,25 @@
 {% block title %}{{ pokemon.name }}{% endblock %}
 
 {% block content %}
-<h1>{{ pokemon.name }}</h1>
-<p>Type: {{ pokemon.primary_type }}</p>
-<p>HP: {{ pokemon.hp }}</p>
-<p>Data Source: {{ pokemon.data_run }}</p>
-<p>Added: {{ pokemon.data_run.created_at }}</p>
 
-<p><a href="{% url 'myapp:record_update' pokemon.pk %}">Edit</a></p>
-<p><a href="{% url 'myapp:record_delete' pokemon.pk %}">Delete</a></p>
-<p><a href="{% url 'myapp:record_list' %}">Back to all Pokemon</a></p>
+<div class="card mb-4">
+  <div class="card-header">
+    <h1 class="mb-0">{{ pokemon.name }}</h1>
+  </div>
+  <div class="card-body">
+
+    <p class="card-text"><strong>Primary Type:</strong> {{ pokemon.primary_type }}</p>
+    <p class="card-text"><strong>Secondary Type:</strong> {{ pokemon.secondary_type|default:"—" }}</p>
+    <p class="card-text"><strong>HP:</strong> {{ pokemon.hp }}</p>
+    <p class="card-text"><strong>Data Source:</strong> {{ pokemon.data_run }}</p>
+    <p class="card-text"><strong>Added:</strong> {{ pokemon.data_run.created_at }}</p>
+
+  </div>
+  <div class="card-footer d-flex gap-2">
+    <a href="{% url 'myapp:record_update' pokemon.pk %}" class="btn btn-primary">Edit</a>
+    <a href="{% url 'myapp:record_delete' pokemon.pk %}" class="btn btn-danger">Delete</a>
+    <a href="{% url 'myapp:record_list' %}" class="btn btn-secondary">Back to all Pokemon</a>
+  </div>
+</div>
+
 {% endblock %}
