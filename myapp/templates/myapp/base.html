@@ -2,13 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Florida Pokemon Tracker{% endblock %}</title>
+    <title>{% block title %}Florida Pokemon Tracker with Pokemon Database{% endblock %}</title>
 </head>
 <body>
 
 <nav>
     <a href="{% url 'myapp:home' %}">Home</a>
     <a href="{% url 'myapp:record_list' %}">Pokemon</a>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'myapp:weather_boost' %}">Weather Boosts</a>
+    </li>
 </nav>
 
 {% block content %}

@@ -16,6 +16,9 @@ urlpatterns = [
     path('pokemon/<int:pk>/edit/', views.record_update, name='record_update'),
     path('pokemon/<int:pk>/delete/', views.record_delete, name='record_delete'),
 
+    # Weather boost page
+    path('weather-boost/', views.weather_boost, name='weather_boost'),
+
     # Analytics dashboard uncomment when analytics dashboard is made
     # path('analytics/', views.analytics, name='analytics'),
 

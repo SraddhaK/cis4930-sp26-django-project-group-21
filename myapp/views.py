@@ -3,7 +3,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.http import require_POST
 from django.core.management import call_command
 from django.core.paginator import Paginator
-from .models import Pokemon, DataRun
+from .models import Pokemon, DataRun, PokemonType, City, WeatherRecord
 from .forms import PokemonForm
 
 def home(request):
@@ -50,6 +50,42 @@ def record_delete(request, pk):
         pokemon.delete()
         return redirect("myapp:record_list")
     return render(request, "myapp/record_confirm_delete.html", {"pokemon": pokemon})
+
+def get_boosted_types(temperature):
+    boosted = []
+    if temperature >= 85:
+        boosted.append('Fire')
+    if temperature <= 65:
+        boosted.append('Water')
+    if 65 < temperature <= 80:
+        boosted.append('Grass')
+    if temperature >= 90:
+        boosted.append('Electric')
+    return boosted if boosted else ['Normal']
+
+def weather_boost(request):
+    cities = City.objects.all()
+    city_boosts = []
+
+    for city in cities:
+        latest = WeatherRecord.objects.filter(city=city).first()
+        if latest:
+            boosted_type_names = get_boosted_types(latest.temperature)
+            boosted_types = PokemonType.objects.filter(name__in=boosted_type_names)
+            boosted_pokemon = Pokemon.objects.filter(
+                primary_type__in=boosted_types
+            ) | Pokemon.objects.filter(
+                secondary_type__in=boosted_types
+            )
+
+            city_boosts.append({
+                "city": city,
+                "temperature": latest.temperature,
+                "timestamp": latest.timestamp,
+                "boosted_types": boosted_type_names,
+                "pokemon": boosted_pokemon.distinct()[:10],
+            })
+    return render(request, "myapp/weather_boost.html", {"city_boosts": city_boosts})
 
 # Aiden's views for API role
 
