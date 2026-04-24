@@ -89,11 +89,11 @@ class Command(BaseCommand):
                 retries_left = 0
 
                 hourly = data.get("hourly", {})
-                times  = hourly.get("time", [])
-                temps  = hourly.get("temperature_2m", [])
+                times = hourly.get("time", [])
+                temps = hourly.get("temperature_2m", [])
 
                 if not times:
-                    self.stdout.write(f"  No hourly data returned for {city.name}, skipping.")
+                    self.stdout.write(f" No hourly data returned for {city.name}, skipping.")
                     continue
 
                 city_saved   = 0
@@ -124,11 +124,11 @@ class Command(BaseCommand):
                         else:
                             city_skipped += 1
 
-                total_saved   += city_saved
+                total_saved += city_saved
                 total_skipped += city_skipped
                 self.stdout.write(
                     self.style.SUCCESS(
-                        f"  {city.name}: {city_saved} created, {city_skipped} updated/skipped."
+                        f" {city.name}: {city_saved} created, {city_skipped} updated/skipped."
                     )
                 )
 
