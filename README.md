@@ -2,7 +2,7 @@
 
 <p>The Team: Aiden Duncan (AJD24C), Sofie Szlezak (SSS23J), Sam Miller(SSM23A), Sraddha Karthik (SK23BJ) <br>
 <strong>The Project:</strong> We incorporated two datasets into a Django application, pulling from a weather API focusing on Florida locations and a 1000+ unit dataset of Pokemon characters and their subsequent statistics. Our application determines what Pokemon would thrive near major cities in the state of Florida, cross referencing weather data over time with Pokemon characteristics. <br>
-<strong>Setup instructions:</strong> git clone, pip install -r requirements.txt, python manage.py, migrate, python manage.py seed_data, python manage.py runserver <br>
+<strong>Setup instructions:</strong> git clone, pip install -r requirements.txt, python manage.py, migrate, python manage.py seed_data, python manage.py fetch_data, python manage.py runserver <br>
 <strong>Original Pokemon Dataset:</strong> https://www.kaggle.com/datasets/mariotormo/complete-pokemon-dataset-updated-090420 <br>
 <strong>Open-Meteo:</strong> https://open-meteo.com/ <br>
 Open-Meteo requires no API key, as it is open source and public. However, it does rate limit requests to 10,000 calls per day limiting the amount of requests we can make for cities. Moreover, the data gathered is not real-time data but rather hourly data ranging from a time lag of 1-4 hours of most recent data. <br>
