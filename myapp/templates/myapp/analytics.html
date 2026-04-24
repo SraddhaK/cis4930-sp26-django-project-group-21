@@ -34,7 +34,7 @@
           <div class="card-body">
             <h6 class="card-title fw-bold">{{ entry.city }}</h6>
             <p class="display-6 fw-bold text-primary mb-1">{{ entry.temperature|floatformat:1 }}°F</p>
-            <p class="text-muted small mb-2">as of {{ entry.timestamp|date:"M d, Y H:i" }}</p>
+            <p class="text-white small mb-2">as of {{ entry.timestamp|date:"M d, Y H:i" }}</p>
             <div>
               {% for t in entry.boosted_types %}
                 <span class="badge bg-warning text-dark me-1">{{ t }} boosted</span>
@@ -156,7 +156,6 @@
 </div>
 
 {% endblock %}
-
 
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>

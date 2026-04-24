@@ -7,7 +7,7 @@ class Command(BaseCommand):
     help = 'Load Pokemon data from CSV'
 
     def handle(self, *args, **kwargs):
-        df = pd.read_csv('data/pokemon.csv')
+        df = pd.read_csv('data/raw/pokemon.csv')
 
         run = DataRun.objects.create(source='csv')
 
