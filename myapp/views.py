@@ -29,7 +29,9 @@ def record_create(request):
         form = PokemonForm(request.POST)
         if form.is_valid(): 
             pokemon = form.save(commit=False) # allows to fill form before saving to DB
-            data_run, _ = DataRun.objects.get_or_create(source='csv')
+            data_run = DataRun.objects.filter(source='csv').first()
+            if not data_run:
+                data_run = DataRun.objects.create(source='csv')
             pokemon.data_run = data_run # note: DataRun tracks which batch of data the Pokemon was imported with
             pokemon.save()
             return redirect("myapp:record_detail", pk=pokemon.pk)
